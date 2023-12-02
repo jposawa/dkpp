@@ -18,3 +18,5 @@ To run the code locally you should clone it and then run
 yarn
 yarn dev
 ```
+
+Sprites from https://craftpix.net/

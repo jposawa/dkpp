@@ -20,3 +20,7 @@
 .actorContainer {
   border-bottom: 1px solid darkgray;
 }
+
+.actor {
+  transform: scaleX(var(--side, 1));
+}

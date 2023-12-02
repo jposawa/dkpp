@@ -1,45 +1,113 @@
 import React from "react";
 import Spritesheet from "react-responsive-spritesheet";
+import { BASE_SPRITE_SIZE, STATE } from "./shared/constants";
+import { Sprite } from "./shared/types";
 
 import styles from "./App.module.scss";
-
-export type StateAttributes = {
-	path: string;
-	steps: number;
-	imgWidth: number;
-	imgHeight: number;
-};
-
-export type Sprite = {
-	steps: number;
-	fps: number;
-};
 
 function App() {
 	const [loopCount, setLoopCount] = React.useState(0);
 	const [currentState, setCurrentState] = React.useState("IDLE");
+	const [deadStage, setDeadStage] = React.useState(0);
+	const [shouldDie] = React.useState(false);
+	const [baseSpeedX, setBaseSpeedX] = React.useState<number>(0);
+	const [multSpeedX, setMultSpeedX] = React.useState<number>(1);
+	const [side, setSide] = React.useState<number>(1);
 	const spriteRef = React.useRef(null);
+	const speedX = React.useMemo(() => {
+		if (baseSpeedX !== 0) {
+			const newSide = baseSpeedX / Math.abs(baseSpeedX);
 
-	const STATE: Record<string, StateAttributes> = {
-		IDLE: {
-			path: "./assets/sprites/wandererMagician/Idle.png",
-			steps: 8,
-			imgWidth: 1024,
-			imgHeight: 128,
-		},
-		DEAD: {
-			path: "./assets/sprites/wandererMagician/Dead.png",
-			steps: 4,
-			imgWidth: 512,
-			imgHeight: 128,
-		},
-		HURT: {
-			path: "./assets/sprites/wandererMagician/Hurt.png",
-			steps: 4,
-			imgWidth: 512,
-			imgHeight: 128,
-		},
+			setSide(newSide);
+		}
+		return baseSpeedX * multSpeedX;
+	}, [baseSpeedX, multSpeedX]);
+
+	const updateSpeedX = (baseSpeed = 0) => {
+		setBaseSpeedX(baseSpeed);
 	};
+
+	const updateMultiSpeedX = (shouldMultiply = false) => {
+		setMultSpeedX(shouldMultiply ? 1.5 : 1);
+	};
+
+	const keyDownEvent = (event: KeyboardEvent) => {
+		switch (event.key) {
+			case "ArrowRight":
+				updateSpeedX(1);
+				break;
+
+			case "ArrowLeft":
+				updateSpeedX(-1);
+				break;
+
+			case "Shift":
+				updateMultiSpeedX(event.shiftKey);
+				break;
+		}
+	};
+
+	const keyUpEvent = (event: KeyboardEvent) => {
+		switch (event.key) {
+			case "ArrowRight":
+				updateSpeedX(0);
+				break;
+
+			case "ArrowLeft":
+				updateSpeedX(0);
+				break;
+
+			case "Shift":
+				updateMultiSpeedX(event.shiftKey);
+				break;
+		}
+	};
+
+	const updateState = React.useCallback(
+		(currentStateName: string, nextState: string) => {
+			const sprite = spriteRef?.current as Sprite | null;
+			if (sprite && nextState !== currentStateName) {
+				sprite.steps = STATE[nextState].steps;
+				sprite.fps = STATE[nextState].steps;
+				sprite.goToAndPlay(1);
+			}
+
+			return nextState;
+		},
+		[]
+	);
+
+	React.useEffect(() => {
+		window.addEventListener("keydown", keyDownEvent);
+		window.addEventListener("keyup", keyUpEvent);
+
+		return () => {
+			window.removeEventListener("keydown", keyDownEvent);
+			window.addEventListener("keyup", keyUpEvent);
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	React.useEffect(() => {
+		if (speedX !== 0) {
+			setCurrentState((currentStateName) =>
+				updateState(currentStateName, Math.abs(speedX) > 1 ? "RUN" : "WALK")
+			);
+		} else {
+			setCurrentState((currentStateName) =>
+				updateState(currentStateName, "IDLE")
+			);
+		}
+	}, [speedX, updateState]);
+
+	// React.useEffect(() => {
+	// 	const sprite = spriteRef?.current as Sprite | null;
+
+	// 	if (sprite && sprite.steps !== STATE[currentState].steps) {
+	// 		sprite.steps = STATE[currentState].steps;
+	// 		sprite.fps = STATE[currentState].steps;
+	// 	}
+	// });
 
 	return (
 		<main className={styles.appMain}>
@@ -49,12 +117,19 @@ function App() {
 				<Spritesheet
 					className={styles.actor}
 					image={STATE[currentState].path}
-					widthFrame={STATE[currentState].imgWidth / STATE[currentState].steps}
-					heightFrame={STATE[currentState].imgHeight}
+					widthFrame={BASE_SPRITE_SIZE}
+					heightFrame={BASE_SPRITE_SIZE}
 					steps={STATE[currentState].steps}
 					fps={STATE[currentState].steps}
 					direction="forward"
 					loop={currentState !== "DEAD"}
+					ref={spriteRef}
+					style={
+						{
+							"--side": side,
+							// eslint-disable-next-line @typescript-eslint/no-explicit-any
+						} as any
+					}
 					onEnterFrame={[
 						{
 							frame: 0,
@@ -63,26 +138,30 @@ function App() {
 								let nextState = currentState;
 
 								if (sprite) {
-									if (loopCount === 4) {
+									if (deadStage === 1) {
 										nextState = "HURT";
-									} else if (loopCount === 5) {
+									} else if (deadStage === 2) {
 										nextState = "DEAD";
 									}
 
-									if (sprite.steps !== STATE[nextState].steps) {
-										sprite.steps = STATE[nextState].steps;
-										sprite.fps = STATE[nextState].steps;
-									}
+									// if (sprite.steps !== STATE[nextState].steps) {
+									// 	sprite.steps = STATE[nextState].steps;
+									// 	sprite.fps = STATE[nextState].steps;
+									// }
 
-									setCurrentState(nextState);
+									setCurrentState((currentStateName) =>
+										updateState(currentStateName, nextState)
+									);
 								}
 							},
 						},
 					]}
 					onLoopComplete={() => {
 						setLoopCount(loopCount + 1);
+						if (shouldDie) {
+							setDeadStage(2);
+						}
 					}}
-					ref={spriteRef}
 				/>
 			</div>
 		</main>

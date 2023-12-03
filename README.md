@@ -19,5 +19,4 @@ yarn
 yarn dev
 ```
 
-
 Sprites from https://craftpix.net/

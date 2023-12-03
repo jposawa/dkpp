@@ -1,0 +1,29 @@
+@import "@/mixins.scss";
+
+.gridButton {
+  --gridSize: var(--size, 5rem);
+
+  @include dFlex();
+  width: var(--gridSize);
+  height: var(--gridSize);
+  border-radius: 0;
+  background: none;
+  border-bottom: 0.7rem solid #336699af;
+}
+
+.floating {
+  animation: float 1000ms linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1rem);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

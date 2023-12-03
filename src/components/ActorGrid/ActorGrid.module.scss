@@ -1,0 +1,17 @@
+@import "@/mixins.scss";
+
+.actorGrid {
+  @include dFlex(row, flex-end);
+  position: absolute;
+  width: 20%;
+  left: 20%;
+  margin: 10rem 0 0;
+  flex-wrap: wrap;
+  gap: 5rem 6rem;
+
+  &>button {
+    &:last-child {
+      margin-right: 3rem;
+    }
+  }
+}

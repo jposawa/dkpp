@@ -1,0 +1,7 @@
+@import "@/mixins.scss";
+
+.actorControl {
+  @include dFlex();
+  width: 100%;
+  height: 30%;
+}

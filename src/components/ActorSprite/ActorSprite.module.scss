@@ -1,0 +1,7 @@
+.actor {
+  --size: 128px;
+
+  width: var(--size);
+  height: var(--size);
+  border-bottom: 1px solid gray;
+}

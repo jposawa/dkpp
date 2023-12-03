@@ -5,6 +5,8 @@ export type StateAttributes = {
 	imgHeight: number;
 };
 
+export type ButtonType = "button" | "submit" | "reset";
+
 export type AvailableState = "IDLE" | "WALK" | "RUN" | "HURT" | "DEAD";
 
 export type Sprite = {

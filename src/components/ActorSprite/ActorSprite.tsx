@@ -177,6 +177,7 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 				direction="forward"
 				loop={currentState !== "DEAD"}
 				ref={spriteRef}
+        isResponsive
 				style={
 					{
 						...style,

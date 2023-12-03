@@ -14,11 +14,17 @@
   height: 100%;
   top: 0;
   left: 0;
-  @include dFlex();
+  @include dFlex(column, space-between);
 }
 
 .actorContainer {
+  @include dFlex();
+  position: relative;
   border-bottom: 1px solid darkgray;
+  transition: all 300ms linear;
+  transform-origin: center;
+  width: 100%;
+  height: 100%;
 }
 
 .actor {

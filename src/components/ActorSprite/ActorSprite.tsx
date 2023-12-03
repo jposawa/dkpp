@@ -1,4 +1,5 @@
 import React from "react";
+import { useRecoilValue } from "recoil";
 import Spritesheet from "react-responsive-spritesheet";
 
 import styles from "./ActorSprite.module.scss";
@@ -9,6 +10,7 @@ import {
 	StateAttributes,
 } from "@/shared/types";
 import { STATE, CONFIG } from "@/shared/constants";
+import { currentSlotState } from "@/shared/state";
 
 export type ActorSpriteProps = {
 	actor: AvailableActor;
@@ -26,6 +28,11 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 	const [multSpeedX, setMultSpeedX] = React.useState<number>(1);
 	const [side, setSide] = React.useState<number>(1);
 	const spriteRef = React.useRef(null);
+	const [spritePosition, setSpritePosition] = React.useState({
+		top: 0,
+		left: 0,
+	});
+	const [animationTime, setAnimationTime] = React.useState<number | null>();
 	const speedX = React.useMemo(() => {
 		if (baseSpeedX !== 0) {
 			const newSide = baseSpeedX / Math.abs(baseSpeedX);
@@ -38,6 +45,7 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 		() => STATE[actor] as Record<AvailableState, StateAttributes>,
 		[actor]
 	);
+	const currentSlot = useRecoilValue(currentSlotState);
 
 	const updateSpeedX = (baseSpeed = 0) => {
 		setBaseSpeedX(baseSpeed);
@@ -116,56 +124,99 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 		}
 	}, [speedX, updateState]);
 
-	return (
-		<Spritesheet
-			className={`${styles.actor} ${className || ""}`}
-			image={spriteState[currentState].path}
-			widthFrame={CONFIG.SPRITE.BASE_SIZE}
-			heightFrame={CONFIG.SPRITE.BASE_SIZE}
-			steps={spriteState[currentState].steps}
-			fps={spriteState[currentState].steps}
-			direction="forward"
-			loop={currentState !== "DEAD"}
-			ref={spriteRef}
-			style={
-				{
-					...style,
-					"--side": side,
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				} as any
-			}
-			onEnterFrame={[
-				{
-					frame: 0,
-					callback: () => {
-						const sprite = spriteRef?.current as Sprite | null;
-						let nextState = currentState;
+	React.useEffect(() => {
+		if (currentSlot) {
+			const slotElement = document.getElementById(currentSlot);
+			const gridElement = document.getElementById("gridLeftContainer");
 
-						if (sprite) {
-							if (deadStage === 1) {
-								nextState = "HURT";
-							} else if (deadStage === 2) {
-								nextState = "DEAD";
-							}
+			if (slotElement && gridElement) {
+				setSpritePosition({
+					top: slotElement.offsetTop + gridElement.offsetTop - 86,
+					left: slotElement.offsetLeft + gridElement.offsetLeft - 32,
+				});
 
-							// if (sprite.steps !== STATE[nextState].steps) {
-							// 	sprite.steps = STATE[nextState].steps;
-							// 	sprite.fps = STATE[nextState].steps;
-							// }
-
-							setCurrentState((currentStateName) =>
-								updateState(currentStateName, nextState)
-							);
-						}
-					},
-				},
-			]}
-			onLoopComplete={() => {
-				setLoopCount(loopCount + 1);
-				if (shouldDie) {
-					setDeadStage(2);
+				if (!animationTime) {
+					setTimeout(() => {
+						setAnimationTime(1000);
+					}, 100);
+				} else {
+					setCurrentState((currentStateName) =>
+						updateState(currentStateName, "WALK")
+					);
+					setTimeout(() => {
+						setCurrentState((currentStateName) =>
+							updateState(currentStateName, "IDLE")
+						);
+					}, animationTime);
 				}
-			}}
-		/>
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [currentSlot]);
+
+	return (
+		<div
+			className={`${styles.actorContainer} ${className || ""}`}
+			style={
+				currentSlot
+					? ({
+							top: spritePosition.top,
+							left: spritePosition.left,
+							"--animationTime": `${animationTime}ms`,
+          } as React.CSSProperties)
+					: {}
+			}
+		>
+			<Spritesheet
+				className={styles.actor}
+				image={spriteState[currentState].path}
+				widthFrame={CONFIG.SPRITE.BASE_SIZE}
+				heightFrame={CONFIG.SPRITE.BASE_SIZE}
+				steps={spriteState[currentState].steps}
+				fps={spriteState[currentState].steps}
+				direction="forward"
+				loop={currentState !== "DEAD"}
+				ref={spriteRef}
+				style={
+					{
+						...style,
+						"--side": side,
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					} as any
+				}
+				onEnterFrame={[
+					{
+						frame: 0,
+						callback: () => {
+							const sprite = spriteRef?.current as Sprite | null;
+							let nextState = currentState;
+
+							if (sprite) {
+								if (deadStage === 1) {
+									nextState = "HURT";
+								} else if (deadStage === 2) {
+									nextState = "DEAD";
+								}
+
+								// if (sprite.steps !== STATE[nextState].steps) {
+								// 	sprite.steps = STATE[nextState].steps;
+								// 	sprite.fps = STATE[nextState].steps;
+								// }
+
+								setCurrentState((currentStateName) =>
+									updateState(currentStateName, nextState)
+								);
+							}
+						},
+					},
+				]}
+				onLoopComplete={() => {
+					setLoopCount(loopCount + 1);
+					if (shouldDie) {
+						setDeadStage(2);
+					}
+				}}
+			/>
+		</div>
 	);
 };

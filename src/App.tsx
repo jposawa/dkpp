@@ -1,4 +1,4 @@
-import { ActorControl, ActorSprite } from "./components";
+import { ActorControl, ActorGrid, ActorSprite } from "./components";
 
 import styles from "./App.module.scss";
 
@@ -7,6 +7,7 @@ function App() {
 		<main className={styles.appMain}>
 			<section className={styles.actorContainer}>
 				<ActorSprite actor="wandererMagician" />
+        <ActorGrid id="gridLeftContainer" />
 			</section>
 
 			<ActorControl />

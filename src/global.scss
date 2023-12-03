@@ -2,7 +2,7 @@
 	margin: 0;
 	padding: 0;
 	text-decoration: none;
-	box-sizing: border-box;
+	box-sizing: border-box !important;
 	list-style: none;
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -34,7 +34,6 @@ body {
 
 	background: var(--bgColor);
 	color: var(--txtColor);
-	font-size: 1.6rem;
 }
 
 #diceContainer {
@@ -67,6 +66,7 @@ body {
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
+  font-size: 10px;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;

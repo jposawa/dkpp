@@ -1,7 +1,19 @@
-.actor {
+@import "@/mixins.scss";
+
+.actorContainer {
   --size: 128px;
 
+  @include dFlex();
+  position: absolute;
   width: var(--size);
   height: var(--size);
-  border-bottom: 1px solid gray;
+  transition-property: top, left;
+  transition-duration: var(--animationTime, 0);
+  transition-timing-function: linear;
+}
+
+.actor {
+  @include dFlex();
+  width: 100%;
+  left: 100%;
 }

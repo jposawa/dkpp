@@ -19,10 +19,10 @@
 
 .actorContainer {
   @include dFlex();
+  position: relative;
   border-bottom: 1px solid darkgray;
   transition: all 300ms linear;
   transform-origin: center;
-  border: 1px solid red;
   width: 100%;
   height: 100%;
 }

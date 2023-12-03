@@ -1,30 +1,22 @@
-# React + TypeScript + Vite
+# Draenak Project Practices (DKPP)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is just a repository with some practices, exercises and tests made by me. Usually within Draenak theme
 
-Currently, two official plugins are available:
+##
+You can check the current state at
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+https://dkpp.netlify.app/
 
-## Expanding the ESLint configuration
+Or, if you don't mind potentially broken things, at
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+https://dev--dkpp.netlify.app/
 
-- Configure the top-level `parserOptions` property like this:
+## Running locally
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+To run the code locally you should clone it and then run
+```
+yarn
+yarn dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Sprites from https://craftpix.net/

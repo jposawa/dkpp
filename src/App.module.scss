@@ -19,6 +19,8 @@
 
 .actorContainer {
   border-bottom: 1px solid darkgray;
+  transition: all 300ms linear;
+  transform-origin: center;
 }
 
 .actor {

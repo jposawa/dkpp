@@ -13,4 +13,5 @@ export const CONFIG = {
 		},
 	},
 	DYNAMIC_STEPS: true,
+  KEYBOARD_MOVEMENT: false,
 };

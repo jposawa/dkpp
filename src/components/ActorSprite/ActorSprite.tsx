@@ -108,14 +108,20 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 	};
 
 	React.useEffect(() => {
-		window.addEventListener("keydown", keyDownEvent);
-		window.addEventListener("keyup", keyUpEvent);
 		window.addEventListener("resize", handleResize);
 
+		if (CONFIG.KEYBOARD_MOVEMENT) {
+			window.addEventListener("keydown", keyDownEvent);
+			window.addEventListener("keyup", keyUpEvent);
+		}
+
 		return () => {
-			window.removeEventListener("keydown", keyDownEvent);
-			window.removeEventListener("keyup", keyUpEvent);
 			window.removeEventListener("resize", handleResize);
+
+			if (CONFIG.KEYBOARD_MOVEMENT) {
+				window.removeEventListener("keydown", keyDownEvent);
+				window.removeEventListener("keyup", keyUpEvent);
+			}
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -220,6 +226,7 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 					{
 						...style,
 						"--side": side,
+						// Doing this because the Spritesheet element was throwing type error for React.CSSProperties type
 						// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					} as any
 				}
@@ -236,11 +243,6 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 								} else if (deadStage === 2) {
 									nextState = "DEAD";
 								}
-
-								// if (sprite.steps !== STATE[nextState].steps) {
-								// 	sprite.steps = STATE[nextState].steps;
-								// 	sprite.fps = STATE[nextState].steps;
-								// }
 
 								setCurrentState((currentStateName) =>
 									updateState(currentStateName, nextState)

@@ -20,16 +20,19 @@ export const GridButton = ({ id }: GridButton) => {
 	};
 
 	return (
-		<Button
-			id={id}
-			title="Grid button"
-			className={styles.gridButton}
-			onClick={setMoveTarget}
-			disabled={!showMove || currentSlot === id}
-		>
-			{showMove && currentSlot !== id && (
-				<SlotMarker className={styles.floating} />
-			)}
-		</Button>
+		<span id={id} className={styles.gridButton}>
+			<span className={styles.background} />
+
+			<Button
+				title="Grid button"
+				className={styles.interactiveButton}
+				onClick={setMoveTarget}
+				disabled={!showMove || currentSlot === id}
+			>
+				{showMove && currentSlot !== id && (
+					<SlotMarker className={styles.floating} />
+				)}
+			</Button>
+		</span>
 	);
 };

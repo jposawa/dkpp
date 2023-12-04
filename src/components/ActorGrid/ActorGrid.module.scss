@@ -26,9 +26,9 @@
 		flex-wrap: wrap;
 		gap: 5rem 35%;
 
-		& > button {
+		& > span {
 			&:last-child {
-				margin-right: 3rem;
+				margin-right: 2rem;
 			}
 		}
 	}

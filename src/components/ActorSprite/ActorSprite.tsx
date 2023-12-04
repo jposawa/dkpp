@@ -33,6 +33,7 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 		left: 0,
 	});
 	const [animationTime, setAnimationTime] = React.useState<number | null>();
+	const [hasResized, setHasResized] = React.useState(false);
 	const speedX = React.useMemo(() => {
 		if (baseSpeedX !== 0) {
 			const newSide = baseSpeedX / Math.abs(baseSpeedX);
@@ -101,13 +102,20 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 		[spriteState]
 	);
 
+	const handleResize = () => {
+		setAnimationTime(0);
+		setHasResized(true);
+	};
+
 	React.useEffect(() => {
 		window.addEventListener("keydown", keyDownEvent);
 		window.addEventListener("keyup", keyUpEvent);
+		window.addEventListener("resize", handleResize);
 
 		return () => {
 			window.removeEventListener("keydown", keyDownEvent);
-			window.addEventListener("keyup", keyUpEvent);
+			window.removeEventListener("keyup", keyUpEvent);
+			window.removeEventListener("resize", handleResize);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -130,9 +138,13 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 			const gridElement = document.getElementById("gridLeftContainer");
 
 			if (slotElement && gridElement) {
+				const {
+					SPRITE: { OFFSET },
+				} = CONFIG;
+
 				setSpritePosition({
-					top: slotElement.offsetTop + gridElement.offsetTop - 86,
-					left: slotElement.offsetLeft + gridElement.offsetLeft - 32,
+					top: slotElement.offsetTop + gridElement.offsetTop - OFFSET.Y,
+					left: slotElement.offsetLeft + gridElement.offsetLeft - OFFSET.X,
 				});
 
 				if (!animationTime) {
@@ -153,6 +165,32 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [currentSlot]);
+
+	React.useEffect(() => {
+		if (hasResized) {
+			if (currentSlot) {
+				const slotElement = document.getElementById(currentSlot);
+				const gridElement = document.getElementById("gridLeftContainer");
+
+				if (slotElement && gridElement) {
+					const {
+						SPRITE: { OFFSET },
+					} = CONFIG;
+
+					setSpritePosition({
+						top: slotElement.offsetTop + gridElement.offsetTop - OFFSET.Y,
+						left: slotElement.offsetLeft + gridElement.offsetLeft - OFFSET.X,
+					});
+
+					setHasResized(false);
+					setTimeout(() => {
+						setAnimationTime(1000);
+					}, 100);
+				}
+			}
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [hasResized]);
 
 	return (
 		<div
@@ -177,7 +215,7 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 				direction="forward"
 				loop={currentState !== "DEAD"}
 				ref={spriteRef}
-        isResponsive
+				isResponsive
 				style={
 					{
 						...style,

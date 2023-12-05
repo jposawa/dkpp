@@ -16,4 +16,4 @@ export type Sprite = {
 	goToAndPlay: (param1: number) => void;
 };
 
-export type AvailableActor = "wandererMagician";
+export type AvailableActor = "wandererMagician" | "lightningMage" | "fireWizard";

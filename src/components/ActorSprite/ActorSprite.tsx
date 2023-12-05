@@ -3,14 +3,14 @@ import { useRecoilValue } from "recoil";
 import Spritesheet from "react-responsive-spritesheet";
 
 import styles from "./ActorSprite.module.scss";
+import { AvailableActor, AvailableState, Sprite } from "@/shared/types";
 import {
-	AvailableActor,
-	AvailableState,
-	Sprite,
-	StateAttributes,
-} from "@/shared/types";
-import { STATE, CONFIG } from "@/shared/constants";
+	ACTOR_STATES_SETTINGS,
+	CONFIG,
+	DEFAULT_STATE,
+} from "@/shared/constants";
 import { currentSlotState } from "@/shared/state";
+import { getSpriteStates } from "@/shared/utils";
 
 export type ActorSpriteProps = {
 	actor: AvailableActor;
@@ -43,7 +43,10 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 		return baseSpeedX * multSpeedX;
 	}, [baseSpeedX, multSpeedX]);
 	const spriteState = React.useMemo(
-		() => STATE[actor] as Record<AvailableState, StateAttributes>,
+		() =>
+			getSpriteStates(actor, {
+				statesSettings: ACTOR_STATES_SETTINGS[actor],
+			}) || DEFAULT_STATE.wandererMagician,
 		[actor]
 	);
 	const currentSlot = useRecoilValue(currentSlotState);
@@ -147,10 +150,10 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 				const {
 					SPRITE: { OFFSET },
 				} = CONFIG;
-        const targetPosition = {
-          x: gridElement.offsetLeft - OFFSET.X,
-          y: gridElement.offsetTop - OFFSET.Y,
-        };
+				const targetPosition = {
+					x: gridElement.offsetLeft - OFFSET.X,
+					y: gridElement.offsetTop - OFFSET.Y,
+				};
 
 				setSpritePosition({
 					top: slotElement.offsetTop + targetPosition.y,
@@ -162,13 +165,14 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 						setAnimationTime(1000);
 					}, 100);
 				} else {
-          const sprite = spriteRef.current! as Sprite;
-          sprite.direction = slotElement.offsetLeft < targetPosition.x ? "forward" : "rewind";
+					const sprite = spriteRef.current! as Sprite;
+					sprite.direction =
+						slotElement.offsetLeft < targetPosition.x ? "forward" : "rewind";
 					setCurrentState((currentStateName) =>
 						updateState(currentStateName, "WALK")
 					);
 					setTimeout(() => {
-            sprite.direction = "forward";
+						sprite.direction = "forward";
 						setCurrentState((currentStateName) =>
 							updateState(currentStateName, "IDLE")
 						);
@@ -229,6 +233,7 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 				loop={currentState !== "DEAD"}
 				ref={spriteRef}
 				isResponsive
+				autoplay
 				style={
 					{
 						...style,

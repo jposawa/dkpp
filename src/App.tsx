@@ -6,7 +6,7 @@ function App() {
 	return (
 		<main className={styles.appMain}>
 			<section className={styles.actorContainer}>
-				<ActorSprite actor="wandererMagician" />
+				<ActorSprite actor="lightningMage" />
         <ActorGrid id="gridLeftContainer" />
 			</section>
 

@@ -147,10 +147,14 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 				const {
 					SPRITE: { OFFSET },
 				} = CONFIG;
+        const targetPosition = {
+          x: gridElement.offsetLeft - OFFSET.X,
+          y: gridElement.offsetTop - OFFSET.Y,
+        };
 
 				setSpritePosition({
-					top: slotElement.offsetTop + gridElement.offsetTop - OFFSET.Y,
-					left: slotElement.offsetLeft + gridElement.offsetLeft - OFFSET.X,
+					top: slotElement.offsetTop + targetPosition.y,
+					left: slotElement.offsetLeft + targetPosition.x,
 				});
 
 				if (!animationTime) {
@@ -158,10 +162,13 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 						setAnimationTime(1000);
 					}, 100);
 				} else {
+          const sprite = spriteRef.current! as Sprite;
+          sprite.direction = slotElement.offsetLeft < targetPosition.x ? "forward" : "rewind";
 					setCurrentState((currentStateName) =>
 						updateState(currentStateName, "WALK")
 					);
 					setTimeout(() => {
+            sprite.direction = "forward";
 						setCurrentState((currentStateName) =>
 							updateState(currentStateName, "IDLE")
 						);

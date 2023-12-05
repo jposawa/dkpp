@@ -1,3 +1,5 @@
+import { AvailableActor } from "../types";
+
 export * from "./spriteStates";
 
 export const PREFIX = "dkpp_";
@@ -15,3 +17,9 @@ export const CONFIG = {
 	DYNAMIC_STEPS: true,
   KEYBOARD_MOVEMENT: false,
 };
+
+export const ACTOR_NAMES: Record<AvailableActor, string> = {
+  wandererMagician: "Magician",
+  lightningMage: "Mage",
+  fireWizard: "Wizard"
+}

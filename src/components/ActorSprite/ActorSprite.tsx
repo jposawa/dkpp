@@ -91,24 +91,34 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 		}
 	};
 
-	const updateState = React.useCallback(
-		(currentStateName: AvailableState, nextState: AvailableState) => {
-			const sprite = spriteRef?.current as Sprite | null;
-			if (sprite && nextState !== currentStateName) {
-				sprite.steps = spriteState[nextState].steps;
-				sprite.fps = spriteState[nextState].steps;
-				sprite.goToAndPlay(1);
-			}
+	// const updateState = React.useCallback(
+	// 	(currentStateName: AvailableState, nextState: AvailableState) => {
+	// 		const sprite = spriteRef?.current as Sprite | null;
+	// 		if (sprite && nextState !== currentStateName) {
+	// 			sprite.steps = spriteState[nextState].steps;
+	// 			sprite.fps = spriteState[nextState].steps;
+	// 			sprite.goToAndPlay(1);
+	// 		}
 
-			return nextState;
-		},
-		[spriteState]
-	);
+	// 		return nextState;
+	// 	},
+	// 	[spriteState]
+	// );
 
 	const handleResize = () => {
 		setAnimationTime(0);
 		setHasResized(true);
 	};
+
+  React.useEffect(() => {
+    const sprite = spriteRef?.current as Sprite | null;
+
+    if (sprite) {
+      sprite.steps = spriteState[currentState].steps;
+      sprite.fps = spriteState[currentState].steps;
+      sprite.goToAndPlay(1);
+    }
+  }, [currentState, spriteState, actor])
 
 	React.useEffect(() => {
 		window.addEventListener("resize", handleResize);
@@ -131,15 +141,11 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 
 	React.useEffect(() => {
 		if (speedX !== 0) {
-			setCurrentState((currentStateName) =>
-				updateState(currentStateName, Math.abs(speedX) > 1 ? "RUN" : "WALK")
-			);
+      setCurrentState(Math.abs(speedX) > 1 ? "RUN" : "WALK");
 		} else {
-			setCurrentState((currentStateName) =>
-				updateState(currentStateName, "IDLE")
-			);
+			setCurrentState("IDLE");
 		}
-	}, [speedX, updateState]);
+	}, [speedX]);
 
 	React.useEffect(() => {
 		if (currentSlot) {
@@ -168,14 +174,10 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 					const sprite = spriteRef.current! as Sprite;
 					sprite.direction =
 						slotElement.offsetLeft < targetPosition.x ? "forward" : "rewind";
-					setCurrentState((currentStateName) =>
-						updateState(currentStateName, "WALK")
-					);
+					setCurrentState("WALK");
 					setTimeout(() => {
 						sprite.direction = "forward";
-						setCurrentState((currentStateName) =>
-							updateState(currentStateName, "IDLE")
-						);
+						setCurrentState("IDLE");
 					}, animationTime);
 				}
 			}
@@ -256,9 +258,7 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 									nextState = "DEAD";
 								}
 
-								setCurrentState((currentStateName) =>
-									updateState(currentStateName, nextState)
-								);
+								setCurrentState(nextState);
 							}
 						},
 					},

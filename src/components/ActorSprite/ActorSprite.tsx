@@ -3,14 +3,14 @@ import { useRecoilValue } from "recoil";
 import Spritesheet from "react-responsive-spritesheet";
 
 import styles from "./ActorSprite.module.scss";
+import { AvailableActor, AvailableState, Sprite } from "@/shared/types";
 import {
-	AvailableActor,
-	AvailableState,
-	Sprite,
-	StateAttributes,
-} from "@/shared/types";
-import { STATE, CONFIG } from "@/shared/constants";
+	ACTOR_STATES_SETTINGS,
+	CONFIG,
+	DEFAULT_STATE,
+} from "@/shared/constants";
 import { currentSlotState } from "@/shared/state";
+import { getSpriteStates } from "@/shared/utils";
 
 export type ActorSpriteProps = {
 	actor: AvailableActor;
@@ -43,7 +43,10 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 		return baseSpeedX * multSpeedX;
 	}, [baseSpeedX, multSpeedX]);
 	const spriteState = React.useMemo(
-		() => STATE[actor] as Record<AvailableState, StateAttributes>,
+		() =>
+			getSpriteStates(actor, {
+				statesSettings: ACTOR_STATES_SETTINGS[actor],
+			}) || DEFAULT_STATE.wandererMagician,
 		[actor]
 	);
 	const currentSlot = useRecoilValue(currentSlotState);
@@ -88,24 +91,34 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 		}
 	};
 
-	const updateState = React.useCallback(
-		(currentStateName: AvailableState, nextState: AvailableState) => {
-			const sprite = spriteRef?.current as Sprite | null;
-			if (sprite && nextState !== currentStateName) {
-				sprite.steps = spriteState[nextState].steps;
-				sprite.fps = spriteState[nextState].steps;
-				sprite.goToAndPlay(1);
-			}
+	// const updateState = React.useCallback(
+	// 	(currentStateName: AvailableState, nextState: AvailableState) => {
+	// 		const sprite = spriteRef?.current as Sprite | null;
+	// 		if (sprite && nextState !== currentStateName) {
+	// 			sprite.steps = spriteState[nextState].steps;
+	// 			sprite.fps = spriteState[nextState].steps;
+	// 			sprite.goToAndPlay(1);
+	// 		}
 
-			return nextState;
-		},
-		[spriteState]
-	);
+	// 		return nextState;
+	// 	},
+	// 	[spriteState]
+	// );
 
 	const handleResize = () => {
 		setAnimationTime(0);
 		setHasResized(true);
 	};
+
+  React.useEffect(() => {
+    const sprite = spriteRef?.current as Sprite | null;
+
+    if (sprite) {
+      sprite.steps = spriteState[currentState].steps;
+      sprite.fps = spriteState[currentState].steps;
+      sprite.goToAndPlay(1);
+    }
+  }, [currentState, spriteState, actor])
 
 	React.useEffect(() => {
 		window.addEventListener("resize", handleResize);
@@ -128,15 +141,11 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 
 	React.useEffect(() => {
 		if (speedX !== 0) {
-			setCurrentState((currentStateName) =>
-				updateState(currentStateName, Math.abs(speedX) > 1 ? "RUN" : "WALK")
-			);
+      setCurrentState(Math.abs(speedX) > 1 ? "RUN" : "WALK");
 		} else {
-			setCurrentState((currentStateName) =>
-				updateState(currentStateName, "IDLE")
-			);
+			setCurrentState("IDLE");
 		}
-	}, [speedX, updateState]);
+	}, [speedX]);
 
 	React.useEffect(() => {
 		if (currentSlot) {
@@ -147,10 +156,14 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 				const {
 					SPRITE: { OFFSET },
 				} = CONFIG;
+				const targetPosition = {
+					x: gridElement.offsetLeft - OFFSET.X,
+					y: gridElement.offsetTop - OFFSET.Y,
+				};
 
 				setSpritePosition({
-					top: slotElement.offsetTop + gridElement.offsetTop - OFFSET.Y,
-					left: slotElement.offsetLeft + gridElement.offsetLeft - OFFSET.X,
+					top: slotElement.offsetTop + targetPosition.y,
+					left: slotElement.offsetLeft + targetPosition.x,
 				});
 
 				if (!animationTime) {
@@ -158,13 +171,13 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 						setAnimationTime(1000);
 					}, 100);
 				} else {
-					setCurrentState((currentStateName) =>
-						updateState(currentStateName, "WALK")
-					);
+					const sprite = spriteRef.current! as Sprite;
+					sprite.direction =
+						slotElement.offsetLeft < targetPosition.x ? "forward" : "rewind";
+					setCurrentState("WALK");
 					setTimeout(() => {
-						setCurrentState((currentStateName) =>
-							updateState(currentStateName, "IDLE")
-						);
+						sprite.direction = "forward";
+						setCurrentState("IDLE");
 					}, animationTime);
 				}
 			}
@@ -222,6 +235,7 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 				loop={currentState !== "DEAD"}
 				ref={spriteRef}
 				isResponsive
+				autoplay
 				style={
 					{
 						...style,
@@ -244,9 +258,7 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 									nextState = "DEAD";
 								}
 
-								setCurrentState((currentStateName) =>
-									updateState(currentStateName, nextState)
-								);
+								setCurrentState(nextState);
 							}
 						},
 					},

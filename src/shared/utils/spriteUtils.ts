@@ -17,7 +17,7 @@ export const getSpriteStates = (
 		statesSettings = DEFAULT_STATE_SETTINGS,
 		imgExtension = "png",
 	} = options || {};
-	const basePath = `public/assets/sprites/${actorKey}`;
+	const basePath = `./assets/sprites/${actorKey}`;
 	const baseState = {
 		imgHeight,
 	};

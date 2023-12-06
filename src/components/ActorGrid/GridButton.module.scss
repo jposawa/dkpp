@@ -17,7 +17,7 @@
 	background: #369;
 	opacity: 0.7;
 	rotate: 5 -5 1 30deg;
-  z-index: var(--containerLayer1);
+	z-index: var(--containerLayer1);
 }
 
 .interactiveButton {
@@ -41,5 +41,11 @@
 	}
 	100% {
 		transform: translateY(0);
+	}
+}
+
+@media screen and (min-width: $desktopBreakpoint) {
+	.gridButton {
+		// --gridSize: 6rem;
 	}
 }

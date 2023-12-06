@@ -1,4 +1,4 @@
-$desktopBreakpoint: 900px;
+$desktopBreakpoint: 830px;
 $largeDesktopBreakpoint: $desktopBreakpoint + 500px;
 
 @mixin dFlex($flexDirection: row, $justifyContent: center) {

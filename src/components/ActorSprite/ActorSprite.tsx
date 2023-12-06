@@ -14,11 +14,17 @@ import { getSpriteStates } from "@/shared/utils";
 
 export type ActorSpriteProps = {
 	actor: AvailableActor;
+	frameSize?: number;
 	className?: string;
 	style?: React.CSSProperties;
 };
 
-export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
+export const ActorSprite = ({
+	actor,
+	frameSize = CONFIG.SPRITE.BASE_SIZE,
+	className,
+	style,
+}: ActorSpriteProps) => {
 	const [loopCount, setLoopCount] = React.useState(0);
 	const [currentState, setCurrentState] =
 		React.useState<AvailableState>("IDLE");
@@ -110,15 +116,15 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 		setHasResized(true);
 	};
 
-  React.useEffect(() => {
-    const sprite = spriteRef?.current as Sprite | null;
+	React.useEffect(() => {
+		const sprite = spriteRef?.current as Sprite | null;
 
-    if (sprite) {
-      sprite.steps = spriteState[currentState].steps;
-      sprite.fps = spriteState[currentState].steps;
-      sprite.goToAndPlay(1);
-    }
-  }, [currentState, spriteState, actor])
+		if (sprite) {
+			sprite.steps = spriteState[currentState].steps;
+			sprite.fps = spriteState[currentState].steps;
+			sprite.goToAndPlay(1);
+		}
+	}, [currentState, spriteState, actor]);
 
 	React.useEffect(() => {
 		window.addEventListener("resize", handleResize);
@@ -141,7 +147,7 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 
 	React.useEffect(() => {
 		if (speedX !== 0) {
-      setCurrentState(Math.abs(speedX) > 1 ? "RUN" : "WALK");
+			setCurrentState(Math.abs(speedX) > 1 ? "RUN" : "WALK");
 		} else {
 			setCurrentState("IDLE");
 		}
@@ -227,8 +233,8 @@ export const ActorSprite = ({ actor, className, style }: ActorSpriteProps) => {
 			<Spritesheet
 				className={styles.actor}
 				image={spriteState[currentState].path}
-				widthFrame={CONFIG.SPRITE.BASE_SIZE}
-				heightFrame={CONFIG.SPRITE.BASE_SIZE}
+				widthFrame={frameSize}
+				heightFrame={frameSize}
 				steps={spriteState[currentState].steps}
 				fps={spriteState[currentState].steps}
 				direction="forward"

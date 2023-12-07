@@ -8,16 +8,18 @@ import { CONFIG } from "@/shared/constants";
 
 export type CharacterActorProps = {
 	character: Character;
-  currentSlot: string;
+	currentSlot: string;
 	className?: string;
 	style?: React.CSSProperties;
+	inverseRender?: boolean;
 };
 
 export const CharacterActor = ({
 	character,
-  currentSlot,
+	currentSlot,
 	className,
 	style,
+	inverseRender = false,
 }: CharacterActorProps) => {
 	const {
 		animator: { actorKey },
@@ -39,6 +41,7 @@ export const CharacterActor = ({
 		if (currentSlot) {
 			const slotElement = document.getElementById(currentSlot);
 			const gridElement = slotElement?.parentElement;
+      const gridIndex = Number(currentSlot[currentSlot.length-1]);
 
 			if (slotElement && gridElement) {
 				const {
@@ -68,8 +71,9 @@ export const CharacterActor = ({
 					spritePosition?.y !== newPosition.y
 				) {
 					const sprite = spriteRef.current!;
+          
 					sprite.setDirection(
-						slotElement.offsetLeft < targetPosition.x ? "forward" : "rewind"
+						gridIndex%2 === 0 ? "rewind" : "forward"
 					);
 
 					setCurrentState("WALK");
@@ -85,7 +89,9 @@ export const CharacterActor = ({
 
 	return (
 		<span
-			className={`${styles.characterActor} ${className}`}
+			className={`${styles.characterActor} ${className || ""} ${
+				inverseRender ? styles.inverse : ""
+			}`}
 			style={
 				{
 					...style,

@@ -19,7 +19,17 @@ export const GridButton = ({ id }: GridButton) => {
 
 	const showMoveMarker = React.useMemo(() => {
 		const [turnCharacter] = turnCharactersList;
-		return showMove && turnCharacter.currentSlot !== id;
+		const slotElement = document.getElementById(id!);
+		const parentElement = slotElement?.parentElement;
+		const sideId = `gridContainer${
+			turnCharacter?.isPlayerGroup ? "Left" : "Right"
+		}`;
+
+		return (
+			showMove &&
+			turnCharacter.currentSlot !== id &&
+			parentElement?.id === sideId
+		);
 	}, [id, showMove, turnCharactersList]);
 
 	const setMoveTarget = () => {

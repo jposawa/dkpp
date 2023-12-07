@@ -5,7 +5,7 @@ import styles from "./App.module.scss";
 import { mainGroupCharacter, mainCharacter } from "./shared/constants";
 import { useRecoilState, useRecoilValue } from "recoil";
 import {
-	currentActorState,
+	currentMainActorState,
 	enemyGroupListState,
 	playerGroupListState,
 	turnCharactersListState,
@@ -14,7 +14,7 @@ import { cloneObj, isEqual } from "./shared/utils";
 import { Character, GroupCharacter } from "./shared/types";
 
 function App() {
-	const currentActor = useRecoilValue(currentActorState);
+	const currentMainActor = useRecoilValue(currentMainActorState);
 	const [turnCharactersList, setTurnCharactersList] = useRecoilState(
 		turnCharactersListState
 	);
@@ -25,27 +25,28 @@ function App() {
 
 	React.useEffect(() => {
 		const updatedCharacter = cloneObj(mainCharacter) as Character;
-		updatedCharacter.animator.actorKey = currentActor;
+		updatedCharacter.animator.actorKey = currentMainActor;
 		const gridId = `gridContainer${
 			mainGroupCharacter.isPlayerGroup ? "Left" : "Right"
 		}_slot${mainGroupCharacter.initialSlotNumber}`;
 		const updatedGroupCharacter = {
 			...mainGroupCharacter,
 			character: updatedCharacter,
-			currentSlot: mainGroupCharacter.currentSlot || gridId,
 		};
 		const mainCharacterIndex = turnCharactersList.findIndex(
 			(groupCharacter) => groupCharacter.character.id === updatedCharacter.id
 		);
 		const newTurnList = cloneObj(turnCharactersList) as GroupCharacter[];
 
+		updatedGroupCharacter.currentSlot =
+			newTurnList[mainCharacterIndex]?.currentSlot || gridId;
 		newTurnList.splice(mainCharacterIndex, 1, updatedGroupCharacter);
 
 		if (!isEqual(newTurnList, turnCharactersList)) {
 			setTurnCharactersList(newTurnList);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [currentActor]);
+	}, [currentMainActor]);
 
 	React.useEffect(() => {
 		const enemyGroup: GroupCharacter[] = [];
@@ -68,6 +69,7 @@ function App() {
 		<main className={styles.appMain}>
 			<section className={styles.actorContainer}>
 				<ActorGroup charactersList={playerGroupList} />
+        <ActorGroup charactersList={enemyGroupList} side="right" />
 			</section>
 
 			<ActorControl />

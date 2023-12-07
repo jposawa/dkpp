@@ -8,6 +8,7 @@ export type ActorGridProps = {
 	slotNumber?: number;
 	className?: string;
 	style?: React.CSSProperties;
+	inverseRender?: boolean;
 };
 
 export const ActorGrid = ({
@@ -15,11 +16,14 @@ export const ActorGrid = ({
 	slotNumber = 4,
 	className,
 	style,
+	inverseRender = false,
 }: ActorGridProps) => {
 	return (
 		<div
 			id={id}
-			className={`${styles.actorGrid} ${className || ""}`}
+			className={`${styles.actorGrid} ${className || ""} ${
+				inverseRender ? styles.inverse : ""
+			}`}
 			style={{ ...style }}
 		>
 			{[...Array(slotNumber)].map((_, index) => (

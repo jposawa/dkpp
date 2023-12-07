@@ -5,3 +5,7 @@
 	transition-duration: var(--animationTime, 0);
 	transition-timing-function: linear;
 }
+
+.inverse {
+  transform: scaleX(-1);
+}

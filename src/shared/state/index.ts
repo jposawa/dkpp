@@ -17,8 +17,8 @@ export const currentSlotState = atom<string | null>({
 	default: "gridSlot3",
 });
 
-export const currentActorState = atom<AvailableActor>({
-	key: `${PREFIX}currentActor`,
+export const currentMainActorState = atom<AvailableActor>({
+	key: `${PREFIX}currentMainActor`,
 	default: "wandererMagician",
 });
 

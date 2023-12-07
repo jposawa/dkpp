@@ -19,10 +19,14 @@ export const ActorGroup = ({
 	style,
 }: ActorGroupProps) => {
 	const gridId = `gridContainer${capitalizeString(side)}`;
+	const sideClassName = `side${capitalizeString(side)}`;
+	const isInverse = side === "right";
 
 	return (
 		<article
-			className={`${styles.actorGroup} ${className}`}
+			className={`${styles.actorGroup} ${className || ""} ${
+				styles[sideClassName]
+			}`}
 			style={{ ...style }}
 		>
 			{charactersList.map(({ character, currentSlot }, index) => (
@@ -30,9 +34,10 @@ export const ActorGroup = ({
 					key={`${character.id}${index}`}
 					character={character}
 					currentSlot={currentSlot}
+					inverseRender={isInverse}
 				/>
 			))}
-			<ActorGrid id={gridId} />
+			<ActorGrid id={gridId} inverseRender={isInverse} />
 		</article>
 	);
 };

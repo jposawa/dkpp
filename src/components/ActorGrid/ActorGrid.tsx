@@ -23,7 +23,7 @@ export const ActorGrid = ({
 			style={{ ...style }}
 		>
 			{[...Array(slotNumber)].map((_, index) => (
-				<GridButton id={`gridSlot${index}`} key={`gridButton${index}`} />
+				<GridButton id={`${id}_slot${index}`} key={`gridButton${index}`} />
 			))}
 		</div>
 	);

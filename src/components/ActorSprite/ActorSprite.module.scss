@@ -7,11 +7,9 @@
 	position: absolute;
 	width: var(--spriteSize);
 	height: var(--spriteSize);
-	transition-property: top, left;
-	transition-duration: var(--animationTime, 0);
-	transition-timing-function: linear;
+  bottom: 0;
+  left: calc((100% - var(--spriteSize)) / 2);
 	z-index: var(--containerLayer2);
-  border: 1px solid red;
 }
 
 .actor {

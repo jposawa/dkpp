@@ -1,6 +1,7 @@
 import { AvailableActor } from "../types";
 
 export * from "./spriteStates";
+export * from "./character";
 
 export const PREFIX = "dkpp_";
 
@@ -11,7 +12,7 @@ export const CONFIG = {
 		BASE_SIZE: 128,
 		OFFSET: {
 			X: 32, // Width / 4
-			Y: 86, // (Height * 3 / 4) - 10
+			Y: 16, // (Height * 3 / 4) - 10
 		},
 	},
 	DYNAMIC_STEPS: true,

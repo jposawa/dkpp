@@ -1,15 +1,14 @@
 @import "@/mixins.scss";
 
 .actorContainer {
-	--size: 128px;
+	--spriteSize: var(--sie, 128px);
 
 	@include dFlex();
 	position: absolute;
-	width: var(--size);
-	height: var(--size);
-	transition-property: top, left;
-	transition-duration: var(--animationTime, 0);
-	transition-timing-function: linear;
+	width: var(--spriteSize);
+	height: var(--spriteSize);
+  bottom: 0;
+  left: calc((100% - var(--spriteSize)) / 2);
 	z-index: var(--containerLayer2);
 }
 

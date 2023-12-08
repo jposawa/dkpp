@@ -2,34 +2,33 @@
 
 .actorGrid {
 	@include dFlex(row, flex-end);
-	position: absolute;
-	width: 45%;
+	position: relative;
+	width: min(100%, 29rem);
 	left: 0;
-	margin: 10rem 0 0;
+	margin: 0;
 	flex-wrap: wrap;
-	gap: 5rem 3rem;
+	gap: 5rem 30%;
 
-	& > button {
+	& > span {
 		&:last-child {
-			margin-right: 3rem;
+			margin-right: 10%;
 		}
+	}
+
+	&.inverse {
+    justify-content: flex-start;
+
+    & > span {
+      &:first-child {
+        margin-left: 10%;
+      }
+    }
 	}
 }
 
 @media screen and (min-width: $desktopBreakpoint) {
 	.actorGrid {
-		@include dFlex(row, flex-end);
-		position: absolute;
-		width: 20%;
-		left: 20%;
-		margin: 10rem 0 0;
 		flex-wrap: wrap;
-		gap: 5rem 35%;
-
-		& > span {
-			&:last-child {
-				margin-right: 2rem;
-			}
-		}
+		gap: 5rem 25%;
 	}
 }

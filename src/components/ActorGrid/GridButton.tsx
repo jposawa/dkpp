@@ -1,8 +1,11 @@
+import React from "react";
 import { useRecoilState } from "recoil";
 import { Button, SlotMarker } from "..";
 
 import styles from "./GridButton.module.scss";
-import { currentSlotState, showMoveState } from "@/shared/state";
+import { showMoveState, turnCharactersListState } from "@/shared/state";
+import { cloneObj } from "@/shared/utils";
+import { GroupCharacter } from "@/shared/types";
 
 export type GridButton = {
 	id?: string;
@@ -10,11 +13,36 @@ export type GridButton = {
 
 export const GridButton = ({ id }: GridButton) => {
 	const [showMove, setShowMove] = useRecoilState(showMoveState);
-	const [currentSlot, setCurrentSlot] = useRecoilState(currentSlotState);
+	const [turnCharactersList, setTurnCharactersList] = useRecoilState(
+		turnCharactersListState
+	);
+
+	const showMoveMarker = React.useMemo(() => {
+		const [turnCharacter] = turnCharactersList;
+		const slotElement = document.getElementById(id!);
+		const parentElement = slotElement?.parentElement;
+		const sideId = `gridContainer${
+			turnCharacter?.isPlayerGroup ? "Left" : "Right"
+		}`;
+
+		return (
+			showMove &&
+			turnCharacter.currentSlot !== id &&
+			parentElement?.id === sideId
+		);
+	}, [id, showMove, turnCharactersList]);
 
 	const setMoveTarget = () => {
-		if (id) {
-			setCurrentSlot(id);
+		if (id && showMoveMarker) {
+			const [turnCharacter] = turnCharactersList;
+			const newTurnCharacter = cloneObj(turnCharacter) as GroupCharacter;
+			newTurnCharacter.currentSlot = id;
+			const newTurnList = cloneObj(turnCharactersList) as GroupCharacter[];
+
+			newTurnList.shift();
+			newTurnList.push(newTurnCharacter);
+
+			setTurnCharactersList(newTurnList);
 			setShowMove(false);
 		}
 	};
@@ -27,11 +55,9 @@ export const GridButton = ({ id }: GridButton) => {
 				title="Grid button"
 				className={styles.interactiveButton}
 				onClick={setMoveTarget}
-				disabled={!showMove || currentSlot === id}
+				disabled={!showMoveMarker}
 			>
-				{showMove && currentSlot !== id && (
-					<SlotMarker className={styles.floating} />
-				)}
+				{showMoveMarker && <SlotMarker className={styles.floating} />}
 			</Button>
 		</span>
 	);

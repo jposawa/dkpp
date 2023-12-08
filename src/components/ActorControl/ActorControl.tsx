@@ -1,6 +1,6 @@
 import React from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { currentActorState, showMoveState } from "@/shared/state";
+import { currentMainActorState, showMoveState } from "@/shared/state";
 import { Button } from "@/components";
 
 import styles from "./ActorControl.module.scss";
@@ -14,7 +14,7 @@ export type ActorControlProps = {
 
 export const ActorControl = ({ className, style }: ActorControlProps) => {
 	const [showMove, setShowMove] = useRecoilState(showMoveState);
-	const setCurrentActor = useSetRecoilState(currentActorState);
+	const setCurrentMainActor = useSetRecoilState(currentMainActorState);
 
 	const moveToggle = () => {
 		setShowMove(!showMove);
@@ -25,7 +25,7 @@ export const ActorControl = ({ className, style }: ActorControlProps) => {
 			target: { value },
 		} = event;
 
-		setCurrentActor(value as AvailableActor);
+		setCurrentMainActor(value as AvailableActor);
 	};
 
 	return (

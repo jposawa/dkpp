@@ -1,6 +1,6 @@
 import { atom } from "recoil";
 import { PREFIX } from "../constants";
-import { AvailableActor } from "../types";
+import { AvailableActor, GroupCharacter } from "../types";
 
 export const showMoveState = atom<boolean>({
 	key: `${PREFIX}showMove`,
@@ -17,7 +17,22 @@ export const currentSlotState = atom<string | null>({
 	default: "gridSlot3",
 });
 
-export const currentActorState = atom<AvailableActor>({
-  key: `${PREFIX}currentActor`,
-  default: "wandererMagician",
+export const currentMainActorState = atom<AvailableActor>({
+	key: `${PREFIX}currentMainActor`,
+	default: "wandererMagician",
+});
+
+export const turnCharactersListState = atom<GroupCharacter[]>({
+  key: `${PREFIX}turnCharactersList`,
+  default: [],
+});
+
+export const playerGroupListState = atom<GroupCharacter[]>({
+  key: `${PREFIX}playerGroupList`,
+  default: [],
+});
+
+export const enemyGroupListState = atom<GroupCharacter[]>({
+  key: `${PREFIX}enemyGroupList`,
+  default: [],
 });

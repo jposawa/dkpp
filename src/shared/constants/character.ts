@@ -20,3 +20,26 @@ export const mainGroupCharacter: GroupCharacter = {
   },
   isPlayerGroup: true,
 }
+
+export const mockEnemyCharacter: Character = {
+  id: "enemy-01",
+  name: "Main enemy",
+  animator: {
+    actorKey: "fireWizard",
+    currentState: "IDLE",
+    id: "enemy01Animator"
+  }
+};
+
+export const mockEnemyGroupCharacter: GroupCharacter = {
+  character: mockEnemyCharacter,
+  initialSlotNumber: 0,
+  currentSlot: "",
+  isPlayerGroup: false,
+  position: {
+    x: 0,
+    y: 0
+  }
+}
+
+export const mockEnemyGroup = [mockEnemyGroupCharacter];

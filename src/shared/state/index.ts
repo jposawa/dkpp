@@ -23,16 +23,21 @@ export const currentMainActorState = atom<AvailableActor>({
 });
 
 export const turnCharactersListState = atom<GroupCharacter[]>({
-  key: `${PREFIX}turnCharactersList`,
-  default: [],
+	key: `${PREFIX}turnCharactersList`,
+	default: [],
 });
 
 export const playerGroupListState = atom<GroupCharacter[]>({
-  key: `${PREFIX}playerGroupList`,
-  default: [],
+	key: `${PREFIX}playerGroupList`,
+	default: [],
 });
 
 export const enemyGroupListState = atom<GroupCharacter[]>({
-  key: `${PREFIX}enemyGroupList`,
-  default: [],
+	key: `${PREFIX}enemyGroupList`,
+	default: [],
+});
+
+export const isWaitingPlayerTurnState = atom<boolean>({
+	key: `${PREFIX}isWaitingPlayerTurn`,
+	default: false,
 });

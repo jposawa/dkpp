@@ -41,7 +41,7 @@ export const CharacterActor = ({
 		if (currentSlot) {
 			const slotElement = document.getElementById(currentSlot);
 			const gridElement = slotElement?.parentElement;
-      const gridIndex = Number(currentSlot[currentSlot.length-1]);
+			const gridIndex = Number(currentSlot[currentSlot.length - 1]);
 
 			if (slotElement && gridElement) {
 				const {
@@ -71,10 +71,8 @@ export const CharacterActor = ({
 					spritePosition?.y !== newPosition.y
 				) {
 					const sprite = spriteRef.current!;
-          
-					sprite.setDirection(
-						gridIndex%2 === 0 ? "rewind" : "forward"
-					);
+
+					sprite.setDirection(gridIndex % 2 === 0 ? "rewind" : "forward");
 
 					setCurrentState("WALK");
 					setTimeout(() => {

@@ -58,6 +58,6 @@ export const mockEnemyGroupCharacter2: GroupCharacter = {
 
 export const mockEnemyGroup = [
 	mockEnemyGroupCharacter1,
-	0,
+	null,
 	mockEnemyGroupCharacter2,
 ];

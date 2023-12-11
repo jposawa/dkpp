@@ -10,7 +10,7 @@ export type Character = {
 
 export type GroupCharacter = {
   character: Character;
-  initialSlotNumber: SlotNumber;
+  initialSlotNumber: SlotNumber | null;
   currentSlot: string;
   isPlayerGroup: boolean;
   position: {

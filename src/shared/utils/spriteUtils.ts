@@ -41,11 +41,18 @@ export const getSpriteStates = (
 
 export const getInitialSlot = (
 	groupCharacter: GroupCharacter,
-	supposedInitialSlot?: string
+	options: {
+		gridIdOverride?: number;
+		supposedInitialSlot?: string;
+	} = {}
 ) => {
+  const {
+    gridIdOverride, supposedInitialSlot,
+  } = options;
+  const gridNumber = groupCharacter.initialSlotNumber ?? gridIdOverride;
 	const gridId = `gridContainer${
 		groupCharacter.isPlayerGroup ? "Left" : "Right"
-	}_slot${groupCharacter.initialSlotNumber}`;
+	}_slot${gridNumber}`;
 
 	const initialSlot =
 		groupCharacter.currentSlot || supposedInitialSlot || gridId;

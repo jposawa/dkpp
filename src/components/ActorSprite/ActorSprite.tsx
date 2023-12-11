@@ -52,6 +52,7 @@ export const ActorSprite = ({
 		if (sprite) {
 			sprite.steps = spriteState[animationKey].steps;
 			sprite.fps = spriteState[animationKey].steps;
+      sprite.goToAndPlay(1);
 		}
 	}, [animationKey, spriteState, actor, spriteRef]);
 

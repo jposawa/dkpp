@@ -1,6 +1,6 @@
 import { capitalizeString } from "./index";
 import { DEFAULT_STATE_SETTINGS } from "../constants";
-import { AvailableState, StateAttributes } from "../types";
+import { AvailableState, GroupCharacter, StateAttributes } from "../types";
 
 type getSpriteStatesOptions = {
 	imgHeight?: number;
@@ -37,4 +37,25 @@ export const getSpriteStates = (
 	});
 
 	return spriteStates;
+};
+
+export const getInitialSlot = (
+	groupCharacter: GroupCharacter,
+	options: {
+		gridIdOverride?: number;
+		supposedInitialSlot?: string;
+	} = {}
+) => {
+  const {
+    gridIdOverride, supposedInitialSlot,
+  } = options;
+  const gridNumber = groupCharacter.initialSlotNumber ?? gridIdOverride;
+	const gridId = `gridContainer${
+		groupCharacter.isPlayerGroup ? "Left" : "Right"
+	}_slot${gridNumber}`;
+
+	const initialSlot =
+		groupCharacter.currentSlot || supposedInitialSlot || gridId;
+
+	return initialSlot;
 };

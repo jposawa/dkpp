@@ -11,8 +11,8 @@ export const CONFIG = {
 	SPRITE: {
 		BASE_SIZE: 128,
 		OFFSET: {
-			X: 32, // Width / 4
-			Y: 16, // (Height * 3 / 4) - 10
+			X: 20, // (Width / 32) * 5
+			Y: 24, // (Height / 32) * 6
 		},
 	},
 	DYNAMIC_STEPS: true,

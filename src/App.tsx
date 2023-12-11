@@ -42,10 +42,9 @@ function App() {
 		);
 		const newTurnList = cloneObj(turnCharactersList) as GroupCharacter[];
 
-		updatedGroupCharacter.currentSlot = getInitialSlot(
-			updatedGroupCharacter,
-			newTurnList[mainCharacterIndex]?.currentSlot
-		);
+		updatedGroupCharacter.currentSlot = getInitialSlot(updatedGroupCharacter, {
+			supposedInitialSlot: newTurnList[mainCharacterIndex]?.currentSlot,
+		});
 		// updatedGroupCharacter.currentSlot =
 		// 	newTurnList[mainCharacterIndex]?.currentSlot || gridId;
 		newTurnList.splice(mainCharacterIndex, 1, updatedGroupCharacter);
@@ -68,14 +67,23 @@ function App() {
 			return false;
 		});
 
-		const updatedEnemyGroup = enemyGroup.map((groupCharacter) => {
-			const initialSlot = getInitialSlot(groupCharacter);
+		const updatedEnemyGroup = enemyGroup
+			.map((groupCharacter, index) => {
+				console.log(index);
+				const initialSlot = getInitialSlot(groupCharacter, {
+					gridIdOverride: groupCharacter.initialSlotNumber ?? index,
+				});
 
-			return {
-				...groupCharacter,
-				currentSlot: initialSlot,
-			};
-		});
+				if (!groupCharacter) {
+					return null;
+				}
+
+				return {
+					...groupCharacter,
+					currentSlot: initialSlot,
+				};
+			})
+			.filter((groupCharacter) => !!groupCharacter) as GroupCharacter[];
 
 		setPlayerGroupList(playerGroup);
 		setEnemyGroupList(updatedEnemyGroup);

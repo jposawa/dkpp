@@ -4,6 +4,7 @@
   transition-property: top, left;
 	transition-duration: var(--animationTime, 0);
 	transition-timing-function: linear;
+  z-index: var(--containerLayer2);
 }
 
 .inverse {

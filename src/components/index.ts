@@ -5,3 +5,4 @@ export * from "./SlotMarker";
 export * from "./ActorGrid";
 export * from "./CharacterActor";
 export * from "./ActorGroup";
+export * from "./TurnInfo";

@@ -1,5 +1,5 @@
 import React from "react";
-import { ActorControl, ActorGroup } from "./components";
+import { ActorControl, ActorGroup, TurnInfo } from "./components";
 
 import styles from "./App.module.scss";
 import {
@@ -13,8 +13,14 @@ import {
 	enemyGroupListState,
 	playerGroupListState,
 	turnCharactersListState,
+	turnCountState,
 } from "./shared/state";
-import { cloneObj, getInitialSlot, isEqual } from "./shared/utils";
+import {
+	cloneObj,
+	defineGroupSlots,
+	getInitialSlot,
+	isEqual,
+} from "./shared/utils";
 import { Character, GroupCharacter } from "./shared/types";
 
 function App() {
@@ -26,6 +32,7 @@ function App() {
 		useRecoilState(playerGroupListState);
 	const [enemyGroupList, setEnemyGroupList] =
 		useRecoilState(enemyGroupListState);
+	const [turnCount, setTurnCount] = useRecoilState(turnCountState);
 
 	React.useEffect(() => {
 		const updatedCharacter = cloneObj(mainCharacter) as Character;
@@ -56,42 +63,58 @@ function App() {
 	}, [currentMainActor]);
 
 	React.useEffect(() => {
-		const enemyGroup: GroupCharacter[] = cloneObj(mockEnemyGroup);
-		const playerGroup = turnCharactersList.filter((groupCharacter) => {
-			if (groupCharacter.isPlayerGroup) {
-				return true;
-			}
-
-			enemyGroup.push(groupCharacter);
-
-			return false;
-		});
-
-		const updatedEnemyGroup = enemyGroup
-			.map((groupCharacter, index) => {
-				console.log(index);
-				const initialSlot = getInitialSlot(groupCharacter, {
-					gridIdOverride: groupCharacter.initialSlotNumber ?? index,
-				});
-
-				if (!groupCharacter) {
-					return null;
+		if (turnCharactersList.length) {
+			const enemyGroup: GroupCharacter[] = [];
+			const playerGroup = turnCharactersList.filter((groupCharacter) => {
+				if (groupCharacter.isPlayerGroup) {
+					return true;
 				}
 
-				return {
-					...groupCharacter,
-					currentSlot: initialSlot,
-				};
-			})
-			.filter((groupCharacter) => !!groupCharacter) as GroupCharacter[];
+				enemyGroup.push(groupCharacter);
 
-		setPlayerGroupList(playerGroup);
-		setEnemyGroupList(updatedEnemyGroup);
+				return false;
+			});
+
+			if (!enemyGroup.length) {
+				enemyGroup.push(...(mockEnemyGroup as GroupCharacter[]));
+			}
+
+			if (turnCount === 0) {
+				playerGroup.push({
+					...mainGroupCharacter,
+					initialSlotNumber: 1,
+					character: {
+						...mainCharacter,
+						id: "alliedCharacter",
+						animator: {
+							...mainCharacter.animator,
+							actorKey: "fireWizard",
+						},
+					},
+				});
+			}
+
+			const updatedPlayerGroup = defineGroupSlots(playerGroup);
+			const updatedEnemyGroup = defineGroupSlots(enemyGroup);
+
+			setPlayerGroupList(updatedPlayerGroup);
+			setEnemyGroupList(updatedEnemyGroup);
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [turnCharactersList]);
 
+	React.useEffect(() => {
+		if (turnCount === 0 && playerGroupList.length && enemyGroupList.length) {
+			setTurnCharactersList([...playerGroupList, ...enemyGroupList]);
+			setTurnCount(turnCount + 1);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [enemyGroupList, playerGroupList, turnCount]);
+
 	return (
 		<main className={styles.appMain}>
+      <TurnInfo />
+
 			<section className={styles.actorContainer}>
 				<ActorGroup charactersList={playerGroupList} />
 				<ActorGroup charactersList={enemyGroupList} side="right" />

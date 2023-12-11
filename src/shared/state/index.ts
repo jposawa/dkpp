@@ -41,3 +41,11 @@ export const isWaitingPlayerTurnState = atom<boolean>({
 	key: `${PREFIX}isWaitingPlayerTurn`,
 	default: false,
 });
+
+export const turnCountState = atom<number>({
+	key: `${PREFIX}turnCount`,
+	default: 0,
+});
+
+// TODO: Create Turn object with more data, including the turnCharactersList so it will hold the characters alive in that turn
+// export const turnDataState = atom<unknown>;

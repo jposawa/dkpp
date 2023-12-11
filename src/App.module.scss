@@ -9,11 +9,11 @@
 }
 
 .appMain {
-  --containerLayer1: 1;
+	--containerLayer1: 1;
 	--containerLayer2: 3;
 	--containerLayer3: 5;
 
-  --interactiveUILayer: var(--containerLayer3);
+	--interactiveUILayer: var(--containerLayer3);
 
 	position: absolute;
 	width: 100%;
@@ -24,8 +24,6 @@
 }
 
 .actorContainer {
-	
-
 	@include dFlex();
 	position: relative;
 	border-bottom: 1px solid darkgray;

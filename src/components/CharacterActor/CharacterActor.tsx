@@ -4,7 +4,6 @@ import { AvailableState, Character } from "@/shared/types";
 import styles from "./CharacterActor.module.scss";
 import { ActorSprite } from "..";
 import ReactResponsiveSpritesheet from "react-responsive-spritesheet";
-import { CONFIG } from "@/shared/constants";
 
 export type CharacterActorProps = {
 	character: Character;
@@ -44,17 +43,14 @@ export const CharacterActor = ({
 			const gridIndex = Number(currentSlot[currentSlot.length - 1]);
 
 			if (slotElement && gridElement) {
-				const {
-					SPRITE: { OFFSET },
-				} = CONFIG;
 				const targetPosition = {
-					x: gridElement.offsetLeft,
-					y: gridElement.offsetTop,
+					x: slotElement.offsetLeft,
+					y: slotElement.offsetTop,
 				};
 
 				const newPosition = {
-					x: slotElement.offsetLeft + targetPosition.x + OFFSET.X,
-					y: slotElement.offsetTop + targetPosition.y + OFFSET.Y,
+					x: gridElement.offsetLeft + targetPosition.x,
+					y: gridElement.offsetTop + targetPosition.y,
 				};
 
 				setSpritePosition({

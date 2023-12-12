@@ -46,10 +46,8 @@ export const getInitialSlot = (
 		supposedInitialSlot?: string;
 	} = {}
 ) => {
-  const {
-    gridIdOverride, supposedInitialSlot,
-  } = options;
-  const gridNumber = groupCharacter.initialSlotNumber ?? gridIdOverride;
+	const { gridIdOverride, supposedInitialSlot } = options;
+	const gridNumber = groupCharacter.initialSlotNumber ?? gridIdOverride;
 	const gridId = `gridContainer${
 		groupCharacter.isPlayerGroup ? "Left" : "Right"
 	}_slot${gridNumber}`;
@@ -58,4 +56,23 @@ export const getInitialSlot = (
 		groupCharacter.currentSlot || supposedInitialSlot || gridId;
 
 	return initialSlot;
+};
+
+export const defineGroupSlots = (group: GroupCharacter[]) => {
+	const updatedGroup = group.map((groupCharacter, index) => {
+		if (!groupCharacter) {
+			return null;
+		}
+
+		return {
+			...groupCharacter,
+			currentSlot: getInitialSlot(groupCharacter, {
+				gridIdOverride: groupCharacter.initialSlotNumber ?? index,
+			}),
+		};
+	});
+
+	return updatedGroup.filter(
+		(groupCharacter) => !!groupCharacter
+	) as GroupCharacter[];
 };

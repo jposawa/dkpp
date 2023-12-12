@@ -3,8 +3,6 @@
 .actorContainer {
 	--spriteSize: var(--sie, 128px);
 
-	@include dFlex();
-	position: absolute;
 	width: var(--spriteSize);
 	height: var(--spriteSize);
   bottom: 0;

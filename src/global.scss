@@ -29,8 +29,8 @@ body {
 	--colorBlackDark: #010101;
 	--colorBlack: #111;
 
-	--txtColor: var(--colorBlack);
-	--bgColor: var(--colorWhite);
+	--txtColor: var(--colorWhite);
+	--bgColor: var(--colorBlack);
 
 	background: var(--bgColor);
 	color: var(--txtColor);
@@ -78,6 +78,7 @@ body {
   :root {
     color: #213547;
     background-color: #ffffff;
+    --txtColor: #213547;
   }
   a:hover {
     color: #747bff;

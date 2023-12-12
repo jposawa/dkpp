@@ -1,10 +1,16 @@
+@import "@/mixins.scss";
+
 .characterActor {
+  @include dFlex(row, center);
+  align-items: flex-end;
   position: absolute;
-  height: 1rem;
+  height: 3rem;
   transition-property: top, left;
 	transition-duration: var(--animationTime, 0);
 	transition-timing-function: linear;
   z-index: var(--containerLayer2);
+  width: 4rem;
+  padding-left: 1rem;
 }
 
 .inverse {

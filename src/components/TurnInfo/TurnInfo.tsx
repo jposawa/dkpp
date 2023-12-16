@@ -1,8 +1,10 @@
 import React from "react";
+import { useRecoilValue } from "recoil";
+
+import { turnCharactersListState, turnCountState } from "@/shared/state";
 
 import styles from "./TurnInfo.module.scss";
-import { useRecoilValue } from "recoil";
-import { turnCountState } from "@/shared/state";
+import { CharOverview } from ".";
 
 export type TurnInfoProps = {
 	className?: string;
@@ -11,13 +13,22 @@ export type TurnInfoProps = {
 
 export const TurnInfo = ({ className, style }: TurnInfoProps) => {
 	const turnCount = useRecoilValue(turnCountState);
+	const turnCharactersList = useRecoilValue(turnCharactersListState);
 
 	return (
 		<section
 			className={`${styles.turnInfo} ${className || ""}`}
 			style={{ ...style }}
 		>
-			{turnCount >= 0 && (
+			<div className={styles.charInfoContainer}>
+				{turnCharactersList.map((groupCharacter, index) => {
+					const { character } = groupCharacter;
+
+					return <CharOverview key={`char${index}`} character={character} />;
+				})}
+			</div>
+
+			{turnCount > 0 && (
 				<span className={styles.turnNumber}>Turn: {turnCount}</span>
 			)}
 		</section>
